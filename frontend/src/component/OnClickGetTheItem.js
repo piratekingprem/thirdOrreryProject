@@ -61,6 +61,7 @@ export default function OnClickGetTheItem() {
     // Fetch generated content from the backend
     const fetchGeneratedContent = async () => {
       try {
+        console.log(`Fetching from: https://third-orrery-project-backend-mau0v6vo1-piratekingprems-projects.vercel.app/api/v1/get_info/${planet}`);
         const response = await fetch(`https://third-orrery-project-backend-mau0v6vo1-piratekingprems-projects.vercel.app/api/v1/get_info/${planet}`);
         const text = await response.text();
         setGeneratedText(text || "AI content could not be generated.");

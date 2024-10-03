@@ -1,13 +1,17 @@
 const express = require('express');
+const app = express();
 const axios = require('axios');
-const cors = require('cors'); // Import CORS middleware
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require('dotenv').config();
-const app = express();
+const cors = require('cors');
+app.use(cors({
+  origin: 'https://third-orrery-project-udtr.vercel.app', // Replace with your deployed frontend's URL
+  methods: 'GET', // Specify allowed HTTP methods
+  credentials: true // Allow credentials if needed (like cookies or authorization headers)
+}));
+
 const port = 3001; // Your choice of port
-const api = process.env.API_KEY
-// Use CORS to allow requests from different origins
-app.use(cors());
+
 
 app.get('/api/v1/get_info/:planet', async(req,res)=> {
     const {planet} = req.params;
@@ -17,8 +21,6 @@ app.get('/api/v1/get_info/:planet', async(req,res)=> {
     const result = await model.generateContent(prompt);
     res.send(result.response.text());
 })
-
-
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
