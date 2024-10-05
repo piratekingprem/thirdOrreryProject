@@ -76,8 +76,33 @@ const Dot = ({ name, color, distance, size, speed, onClick }) => {
 const Sun = () => {
   const { scene } = useGLTF('/sun.glb'); // Load the sun model
 
-  return <primitive object={scene} scale={0.5} />; // Scale the sun as needed
+  // Create a glowing material
+  const glowMaterial = new THREE.MeshStandardMaterial({
+    color: 'yellow',
+    emissive: 'yellow',
+    emissiveIntensity: 3,
+    transparent: true,
+    opacity: 1,
+  });
+
+  // Create a glowing sphere around the sun
+  const glowSphere = (
+    <mesh scale={0.75} position={[0, 0, 0]}>
+      <sphereGeometry args={[3, 320, 32]} />
+      <meshStandardMaterial {...glowMaterial} />
+    </mesh>
+  );
+
+  return (
+    <>
+      <primitive object={scene} scale={0.5} /> {/* Sun model */}
+      {glowSphere}
+      <pointLight intensity={30000} position={[0, 0, 0]} distance={500000} decay={2} /> {/* Point light */}
+    </>
+  );
 };
+
+
 
 // ZoomController that controls camera zoom based on hand distance
 const ZoomController = ({ zoomLevel }) => {
