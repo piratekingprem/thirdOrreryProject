@@ -3,11 +3,37 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { useGLTF, OrbitControls, Environment } from "@react-three/drei";
 import { useParams } from "react-router-dom";
 import * as handpose from '@tensorflow-models/handpose';
+import * as THREE from 'three';
 import '@tensorflow/tfjs';
 import InformationCard from "./InformationCard";
 import '../component/OnClickGetTheItem.css';
 
 const lerp = (start, end, t) => start * (1 - t) + end * t;
+
+const Stars = () => {
+  const group = useRef();
+  const [positions] = useState(() => {
+    const temp = [];
+    for (let i = 0; i < 5000; i++) {
+      const x = THREE.MathUtils.randFloatSpread(2000);
+      const y = THREE.MathUtils.randFloatSpread(2000);
+      const z = THREE.MathUtils.randFloatSpread(2000);
+      temp.push([x, y, z]);
+    }
+    return temp;
+  });
+
+  return (
+    <group ref={group}>
+      {positions.map((pos, idx) => (
+        <mesh key={idx} position={pos}>
+          <sphereGeometry args={[0.5, 8, 8]} />
+          <meshStandardMaterial color="white" />
+        </mesh>
+      ))}
+    </group>
+  );
+};
 
 const ZoomController = ({ targetZoomLevel }) => {
   const { camera } = useThree();
@@ -120,6 +146,7 @@ export default function OnClickGetTheItem() {
   return (
     <div style={{ position: 'relative' }}>
       <Canvas>
+        <Stars/>
         <Environment preset="sunset" />
         <ambientLight intensity={0.1} />
         <directionalLight position={[5, 5, 5]} intensity={1} />
