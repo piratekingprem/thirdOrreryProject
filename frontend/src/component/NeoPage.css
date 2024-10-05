@@ -1,15 +1,54 @@
 .neo-page {
-    color: white;
-    background-color: black;
-    padding: 20px;
-  }
-  
-  .neo-page h1 {
-    font-size: 2em;
-  }
-  
-  .neo-page p {
-    margin: 10px 0;
-    font-size: 1.2em;
-  }
-  
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 400px;
+  padding: 20px;
+  background: transparent;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 400px;
+  overflow-y: hidden; /* Disable scroll */
+  color: #39FF14; /* Same neon green as .information-card */
+}
+
+.neo-page h1 {
+  font-size: 1.5em; /* Matches .information-card h2 */
+  margin-bottom: 10px;
+  font-weight: 100;
+  color: #39FF14; /* Use the same color */
+}
+
+.neo-page p {
+  margin: 10px 0;
+  font-size: 1.2em;
+  color: #39FF14; /* Keep text color consistent */
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.pagination-controls button {
+  background: transparent;
+  color: greenyellow;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.pagination-controls button:disabled {
+  background-color: #d3d3d3;
+  cursor: not-allowed;
+}
+
+.pagination-controls span {
+  font-size: 1em;
+  font-weight: bold;
+}
