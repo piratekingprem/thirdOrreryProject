@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Html } from '@react-three/drei';
+import { OrbitControls, Html, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import * as handpose from '@tensorflow-models/handpose';
 import '@tensorflow/tfjs';
@@ -11,7 +11,7 @@ const Stars = () => {
   const group = useRef();
   const [positions] = useState(() => {
     const temp = [];
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 5000; i++) {
       const x = THREE.MathUtils.randFloatSpread(2000);
       const y = THREE.MathUtils.randFloatSpread(2000);
       const z = THREE.MathUtils.randFloatSpread(2000);
@@ -74,12 +74,9 @@ const Dot = ({ name, color, distance, size, speed, onClick }) => {
 };
 
 const Sun = () => {
-  return (
-    <mesh>
-      <sphereGeometry args={[1.5, 32, 32]} />
-      <meshStandardMaterial emissive="yellow" emissiveIntensity={1} />
-    </mesh>
-  );
+  const { scene } = useGLTF('/sun.glb'); // Load the sun model
+
+  return <primitive object={scene} scale={0.5} />; // Scale the sun as needed
 };
 
 // ZoomController that controls camera zoom based on hand distance
@@ -242,7 +239,7 @@ const Orrery = () => {
           ))}
           {neoData.map((neo) => (
             <group key={neo.name}>
-              <OrbitPath distance={neo.distance} />
+              {/* <OrbitPath distance={neo.distance} /> */}
               <Dot
                 name={neo.name}
                 color={neo.color}
