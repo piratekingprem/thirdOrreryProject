@@ -7,19 +7,14 @@ import '@tensorflow/tfjs';
 import InformationCard from "./InformationCard";
 import '../component/OnClickGetTheItem.css';
 
-// Helper function for smooth transitions using linear interpolation (lerp)
-const lerp = (start, end, t) => {
-  return start * (1 - t) + end * t;
-};
+const lerp = (start, end, t) => start * (1 - t) + end * t;
 
-// ZoomController with smooth zoom transition
 const ZoomController = ({ targetZoomLevel }) => {
   const { camera } = useThree();
   const [currentZoomLevel, setCurrentZoomLevel] = useState(camera.position.y);
 
   useEffect(() => {
     const handleZoom = () => {
-      // Interpolate smoothly between the current zoom level and the target zoom level
       const newZoomLevel = lerp(currentZoomLevel, targetZoomLevel, 0.1);
       camera.position.y = newZoomLevel;
       setCurrentZoomLevel(newZoomLevel);
@@ -32,14 +27,11 @@ const ZoomController = ({ targetZoomLevel }) => {
 
 function Render({ pathOfPlanetModel }) {
   const { scene } = useGLTF(`/${pathOfPlanetModel}.glb`);
-
-  // Use useRef to store the reference to the scene and rotate it
   const planetRef = useRef();
 
-  // Use useFrame to rotate the planet on every frame
   useFrame(() => {
     if (planetRef.current) {
-      planetRef.current.rotation.y += 0.01; // Rotate around the Y-axis
+      planetRef.current.rotation.y += 0.01;
     }
   });
 
@@ -50,21 +42,19 @@ export default function OnClickGetTheItem() {
   const { planet } = useParams();
   const [planetModelPath, setPlanetModelPath] = useState("");
   const [generatedText, setGeneratedText] = useState("Loading AI-generated content...");
-  const [targetZoomLevel, setTargetZoomLevel] = useState(100); // Initial zoom level
-  const [handPoseDetectionStarted, setHandPoseDetectionStarted] = useState(false); // Track if handpose detection has started
+  const [targetZoomLevel, setTargetZoomLevel] = useState(100);
+  const [handPoseDetectionStarted, setHandPoseDetectionStarted] = useState(false);
   const videoRef = useRef(null);
   let model = null;
 
   useEffect(() => {
     setPlanetModelPath(planet);
 
-    // Fetch generated content from the backend
     const fetchGeneratedContent = async () => {
       try {
-        console.log(`Fetching from: https://third-orrery-project-backend-mau0v6vo1-piratekingprems-projects.vercel.app/api/v1/get_info/${planet}`);
-        const response = await fetch(`https://third-orrery-project-backend-mau0v6vo1-piratekingprems-projects.vercel.app/api/v1/get_info/${planet}`);
-        const text = await response.text();
-        setGeneratedText(text || "AI content could not be generated.");
+        const response = await fetch(`http://localhost:3001/api/v1/get_info/${planet}`);
+        const data = await response.text();
+        setGeneratedText(data || "AI content could not be generated.");
       } catch (error) {
         console.error("Error fetching AI content:", error);
         setGeneratedText("Error fetching AI content.");
@@ -76,7 +66,6 @@ export default function OnClickGetTheItem() {
 
   useGLTF.preload(`/${planet}.glb`);
 
-  // Load Handpose Model and Setup Camera for Hand Tracking
   const loadHandposeModel = async () => {
     model = await handpose.load();
     detectHand();
@@ -84,6 +73,8 @@ export default function OnClickGetTheItem() {
 
   const detectHand = async () => {
     const video = videoRef.current;
+    if (!video || !model) return;
+
     const predictions = await model.estimateHands(video);
 
     if (predictions.length > 0) {
@@ -100,28 +91,27 @@ export default function OnClickGetTheItem() {
       controlZoom(distance);
     }
 
-    requestAnimationFrame(detectHand);
+    setTimeout(() => {
+      requestAnimationFrame(detectHand); // Throttle detection for better performance
+    }, 100); // Adjust this delay to control the gesture detection interval
   };
 
-  // Zoom control based on hand distance
   const controlZoom = (distance) => {
-    const zoomSpeed = 10; // Control how fast zoom happens
-    const minZoom = 500;  // Minimum zoom level (closer)
-    const maxZoom = 100; // Maximum zoom level (further away)
+    const zoomSpeed = 5; // Faster zoom
+    const minZoom = 20;
+    const maxZoom = 100;
 
-    // Adjust zoom level based on hand distance, with dynamic limits
     if (distance < 50) {
-      setTargetZoomLevel((prev) => Math.max(prev - zoomSpeed, minZoom)); // Zoom in
+      setTargetZoomLevel((prev) => Math.max(prev - zoomSpeed, minZoom));
     } else if (distance > 100) {
-      setTargetZoomLevel((prev) => Math.min(prev + zoomSpeed, maxZoom)); // Zoom out
+      setTargetZoomLevel((prev) => Math.min(prev + zoomSpeed, maxZoom));
     }
   };
 
-  // Setup Camera and Load Handpose Model after button click
   const startHandposeDetection = async () => {
-    setHandPoseDetectionStarted(true); // Mark handpose detection as started
+    setHandPoseDetectionStarted(true);
     const video = videoRef.current;
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
     video.srcObject = stream;
     video.play();
     await loadHandposeModel();
@@ -129,7 +119,6 @@ export default function OnClickGetTheItem() {
 
   return (
     <div style={{ position: 'relative' }}>
-      {/* 3D Scene */}
       <Canvas>
         <Environment preset="sunset" />
         <ambientLight intensity={0.1} />
@@ -143,11 +132,9 @@ export default function OnClickGetTheItem() {
         <ZoomController targetZoomLevel={targetZoomLevel} />
       </Canvas>
 
-      {/* Information Card - overlaying the canvas */}
       <InformationCard info={generatedText} />
 
-      {/* Handpose Detection */}
-      <video ref={videoRef} style={{ position : 'absolute' }} />
+      <video ref={videoRef} style={{ position : 'absolute', width: '150px' }} />
       {!handPoseDetectionStarted && (
         <button
           style={{
@@ -167,7 +154,6 @@ export default function OnClickGetTheItem() {
         </button>
       )}
 
-      {/* Display the AI-generated text separately if needed */}
       <div>
         <h2>AI-Generated Story:</h2>
         <p>{generatedText}</p>
