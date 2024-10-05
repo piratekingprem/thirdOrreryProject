@@ -76,9 +76,9 @@ const Dot = ({ name, color, distance, size, speed, onClick }) => {
 const Sun = () => {
   const { scene } = useGLTF('/sun.glb'); // Load the sun model
 
-<<<<<<< HEAD
+
   return <primitive object={scene} scale={0.05} />; // Scale the sun as needed
-=======
+
   // Create a glowing material
   const glowMaterial = new THREE.MeshStandardMaterial({
     color: 'yellow',
@@ -103,7 +103,7 @@ const Sun = () => {
       <pointLight intensity={30000} position={[0, 0, 0]} distance={500000} decay={2} /> {/* Point light */}
     </>
   );
->>>>>>> 31d4ac0e6f613dedd1556198c6978aba10ad20b6
+
 };
 
 

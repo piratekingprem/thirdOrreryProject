@@ -44,7 +44,7 @@ export default function InformationCard({ info }) {
           Page {currentPage + 1} of {totalPages}
         </span>
         <button onClick={handleNextPage} disabled={currentPage === totalPages - 1}>
-          >
+          
         </button>
       </div>
     </div>
