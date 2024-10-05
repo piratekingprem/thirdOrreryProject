@@ -6,6 +6,7 @@ import * as handpose from '@tensorflow-models/handpose';
 import '@tensorflow/tfjs';
 import './Orrey.css';
 import { useNavigate } from 'react-router-dom';
+import SpaceChatBot from './component/SpaceChatBot';
 
 const Stars = () => {
   const group = useRef();
@@ -224,6 +225,7 @@ const Orrery = () => {
   let navigate = useNavigate();
   return (
     <div style={{ display: 'flex' }}>
+      <SpaceChatBot/>
       {showPanel && (
         <div style={{ width: '30%', padding: '20px', color: 'white', background: '#1a1a1a' }}>
           {selectedObject ? (
