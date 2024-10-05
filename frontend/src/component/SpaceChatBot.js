@@ -5,17 +5,42 @@ const SpaceChatBot = () => {
   const [response, setResponse] = useState(''); // To store bot's response
   const [input, setInput] = useState('');
 
-  // Space-related responses
+  // Space-related responses with full information
   const getSpaceResponse = async (query) => {
     let response = '';
     try {
       const res = await axios.get(`https://api.le-systeme-solaire.net/rest/bodies/${query.toLowerCase()}`);
       if (res.data) {
-        const { englishName, mass, gravity, meanRadius } = res.data;
+        const {
+          englishName,
+          isPlanet,
+          mass,
+          gravity,
+          meanRadius,
+          moons,
+          density,
+          escape,
+          axialTilt,
+          semimajorAxis,
+          equaRadius,
+          polarRadius,
+          sideralOrbit,
+          sideralRotation,
+        } = res.data;
         response = `Information about ${englishName}:
+        - Is it a planet? ${isPlanet ? 'Yes' : 'No'}
         - Mass: ${mass ? `${mass.massValue} x 10^${mass.massExponent} kg` : 'N/A'}
         - Gravity: ${gravity || 'N/A'} m/s²
         - Mean Radius: ${meanRadius || 'N/A'} km
+        - Number of Moons: ${moons ? moons.length : 'N/A'}
+        - Density: ${density || 'N/A'} g/cm³
+        - Escape Velocity: ${escape || 'N/A'} m/s
+        - Axial Tilt: ${axialTilt || 'N/A'}°
+        - Semi-Major Axis: ${semimajorAxis || 'N/A'} km
+        - Equatorial Radius: ${equaRadius || 'N/A'} km
+        - Polar Radius: ${polarRadius || 'N/A'} km
+        - Sideral Orbit (Orbital Period): ${sideralOrbit || 'N/A'} days
+        - Sideral Rotation (Day Length): ${sideralRotation || 'N/A'} hours
         `;
       }
     } catch (error) {
