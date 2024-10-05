@@ -143,12 +143,17 @@ const Orrery = () => {
     fetchNEOData();
   }, []);
 
-  const handleObjectClick = (object) => {
-    
+  const handleObjectClick = (object, isNeo = false) => {
     setSelectedObject(object);
     setShowPanel(true);
-    navigate(`/planet/${object.name}`);
+
+    if (isNeo) {
+      navigate(`/neo/${object.name}`); // Redirect to NEO page if it's a NEO
+    } else {
+      navigate(`/planet/${object.name}`); // Redirect to planet page for planets
+    }
   };
+
 
   // Load Handpose Model and Setup Camera for Hand Tracking
   const loadHandposeModel = async () => {
@@ -244,10 +249,11 @@ const Orrery = () => {
                 distance={neo.distance}
                 size={neo.size}
                 speed={neo.speed}
-                onClick={() => handleObjectClick(neo)}
+                onClick={() => handleObjectClick(neo, true)}  // Set isNeo as true
               />
             </group>
           ))}
+
           <ZoomController zoomLevel={zoomLevel} />
         </Canvas>
 

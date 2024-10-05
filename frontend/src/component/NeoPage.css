@@ -1,0 +1,15 @@
+.neo-page {
+    color: white;
+    background-color: black;
+    padding: 20px;
+  }
+  
+  .neo-page h1 {
+    font-size: 2em;
+  }
+  
+  .neo-page p {
+    margin: 10px 0;
+    font-size: 1.2em;
+  }
+  
