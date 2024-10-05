@@ -39,7 +39,7 @@ const NeoPage = () => {
   }
 
   return (
-    <div className="neo-page">
+    <div className="information-card">
       <h1>{neoDetails.name}</h1>
       <p><strong>Diameter:</strong> {neoDetails.diameter} km</p>
       <p><strong>Velocity:</strong> {neoDetails.velocity} km/h</p>
