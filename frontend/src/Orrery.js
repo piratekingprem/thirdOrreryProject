@@ -34,8 +34,8 @@ const Stars = () => {
 
 const OrbitPath = ({ distance, onClick }) => {
   const points = [];
-  for (let i = 0; i < 64; i++) {
-    const angle = (i / 64) * Math.PI * 2;
+  for (let i = 0; i < 74; i++) {
+    const angle = (i / 54) * Math.PI * 2;
     points.push(new THREE.Vector3(Math.cos(angle) * distance, 0, Math.sin(angle) * distance));
   }
   const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -130,14 +130,14 @@ const Orrery = () => {
   let model = null;
 
   const planets = [
-    { name: 'Mercury', color: 'gray', distance: 0.3 * 10, size: 0.1, speed: 0.03 },
-    { name: 'Venus', color: 'yellow', distance: 0.7 * 10, size: 0.1, speed: 0.02 },
-    { name: 'Earth', color: 'blue', distance: 1 * 10, size: 0.1, speed: 0.01 },
-    { name: 'Mars', color: 'red', distance: 1.52 * 10, size: 0.1, speed: 0.008 },
-    { name: 'Jupiter', color: 'orange', distance: 5.2 * 10, size: 0.1, speed: 0.005 },
-    { name: 'Saturn', color: 'goldenrod', distance: 9.5 * 10, size: 0.1, speed: 0.004 },
-    { name: 'Uranus', color: 'lightblue', distance: 19.2 * 10, size: 0.1, speed: 0.003 },
-    { name: 'Neptune', color: 'darkblue', distance: 30.0 * 10, size: 0.1, speed: 0.002 },
+    { name: 'Mercury', color: 'gray', distance: 0.3 * 20, size: 0.1, speed: 0.03 },
+    { name: 'Venus', color: 'yellow', distance: 0.7 * 20, size: 0.1, speed: 0.02 },
+    { name: 'Earth', color: 'blue', distance: 1 * 20, size: 0.1, speed: 0.01 },
+    { name: 'Mars', color: 'red', distance: 1.52 * 20, size: 0.1, speed: 0.008 },
+    { name: 'Jupiter', color: 'orange', distance: 5.2 * 20, size: 0.1, speed: 0.005 },
+    { name: 'Saturn', color: 'goldenrod', distance: 9.5 * 20, size: 0.1, speed: 0.004 },
+    { name: 'Uranus', color: 'lightblue', distance: 19.2 * 20, size: 0.1, speed: 0.003 },
+    { name: 'Neptune', color: 'darkblue', distance: 30.0 * 20, size: 0.1, speed: 0.002 },
   ];
 
   // Fetch NEO data from the NASA API
