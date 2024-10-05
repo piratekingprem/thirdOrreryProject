@@ -6,7 +6,7 @@ import * as handpose from '@tensorflow-models/handpose';
 import '@tensorflow/tfjs';
 import './Orrey.css';
 import { useNavigate } from 'react-router-dom';
-import SpaceChatBot from './component/SpaceChatBot';
+
 
 const Stars = () => {
   const group = useRef();
@@ -74,40 +74,43 @@ const Dot = ({ name, color, distance, size, speed, onClick }) => {
   );
 };
 
-const Sun = () => {
-  const { scene } = useGLTF('/sun.glb'); // Load the sun model
 
+const PlanetModel = ({ gltfUrl, distance, speed, size, onClick, name }) => {
+  const { scene } = useGLTF(gltfUrl); // Load GLTF model
+  const ref = useRef();
+  const angle = useRef(Math.random() * Math.PI * 2);
 
-  return <primitive object={scene} scale={0.05} />; // Scale the sun as needed
-
-  // Create a glowing material
-  const glowMaterial = new THREE.MeshStandardMaterial({
-    color: 'yellow',
-    emissive: 'yellow',
-    emissiveIntensity: 3,
-    transparent: true,
-    opacity: 1,
+  useFrame((state, delta) => {
+    if (ref.current) {
+      // Orbit around the Sun
+      angle.current += delta * speed;
+      ref.current.position.x = distance * Math.cos(angle.current);
+      ref.current.position.z = distance * Math.sin(angle.current);
+      
+      // Rotate around its own axis
+      ref.current.rotation.y += 0.01; // Adjust the rotation speed as needed
+    }
   });
 
-  // Create a glowing sphere around the sun
-  const glowSphere = (
-    <mesh scale={0.75} position={[0, 0, 0]}>
-      <sphereGeometry args={[3, 320, 32]} />
-      <meshStandardMaterial {...glowMaterial} />
-    </mesh>
-  );
-
   return (
-    <>
-      <primitive object={scene} scale={0.5} /> {/* Sun model */}
-      {glowSphere}
-      <pointLight intensity={30000} position={[0, 0, 0]} distance={500000} decay={2} /> {/* Point light */}
-    </>
+    <group ref={ref} onClick={onClick}>
+      <primitive object={scene} scale={size} />
+      <Html position={[0, size * 5, 0]}>
+        <div style={{ color: 'white', fontSize: '1em', cursor: 'pointer' }} onClick={onClick}>
+          {name}
+        </div>
+      </Html>
+    </group>
   );
-
 };
 
 
+
+const Sun = () => {
+  const { scene } = useGLTF('/sun.glb');
+
+  return <primitive object={scene} scale={0.1} />;
+};
 
 // ZoomController that controls camera zoom based on hand distance
 const ZoomController = ({ zoomLevel }) => {
@@ -131,17 +134,17 @@ const Orrery = () => {
   let model = null;
 
   const planets = [
-    { name: 'Mercury', color: 'gray', distance: 0.3 * 20, size: 0.1, speed: 0.03 },
-    { name: 'Venus', color: 'yellow', distance: 0.7 * 20, size: 0.1, speed: 0.02 },
-    { name: 'Earth', color: 'blue', distance: 1 * 20, size: 0.1, speed: 0.01 },
-    { name: 'Mars', color: 'red', distance: 1.52 * 20, size: 0.1, speed: 0.008 },
-    { name: 'Jupiter', color: 'orange', distance: 5.2 * 20, size: 0.1, speed: 0.005 },
-    { name: 'Saturn', color: 'goldenrod', distance: 9.5 * 20, size: 0.1, speed: 0.004 },
-    { name: 'Uranus', color: 'lightblue', distance: 19.2 * 20, size: 0.1, speed: 0.003 },
-    { name: 'Neptune', color: 'darkblue', distance: 30.0 * 20, size: 0.1, speed: 0.002 },
+    { name: 'Mercury', distance: 0.3 * 20, size: 0.001, speed: 0.03, gltfUrl: '/mercury.glb' },
+    { name: 'Venus', distance: 0.7 * 20, size: 0.02, speed: 0.02, gltfUrl: '/venus.glb' },
+    { name: 'Earth', distance: 1 * 20, size: 0.4, speed: 0.01, gltfUrl: './Earth.glb' },
+    { name: 'Mars', distance: 1.52 * 20, size: 0.15, speed: 0.008, gltfUrl: '/Mars.glb' },
+    { name: 'Jupiter', distance: 5.2 * 20, size: 0.05, speed: 0.005, gltfUrl: '/jupiter.glb' },
+    { name: 'Saturn', distance: 9.5 * 20, size: 0.04, speed: 0.004, gltfUrl: '/saturn.glb' },
+    { name: 'Uranus', distance: 19.2 * 20, size: 0.03, speed: 0.003, gltfUrl: '/uranus.glb' },
+    { name: 'Neptune', distance: 30.0 * 20, size: 0.03, speed: 0.002, gltfUrl: '/neptune.glb' },
   ];
 
-  // Fetch NEO data from the NASA API
+
   useEffect(() => {
     const fetchNEOData = async () => {
       try {
@@ -173,7 +176,6 @@ const Orrery = () => {
   const handleObjectClick = (object, isNeo = false) => {
     setSelectedObject(object);
     setShowPanel(true);
-
     if (isNeo) {
       navigate(`/neo/${object.name}`); // Redirect to NEO page if it's a NEO
     } else {
@@ -181,8 +183,6 @@ const Orrery = () => {
     }
   };
 
-
-  // Load Handpose Model and Setup Camera for Hand Tracking
   const loadHandposeModel = async () => {
     model = await handpose.load();
     detectHand();
@@ -217,7 +217,6 @@ const Orrery = () => {
     }
   };
 
-  // Setup Camera and Load Handpose Model after button click
   const startHandposeDetection = async () => {
     setHandPoseDetectionStarted(true); // Mark handpose detection as started
     const video = videoRef.current;
@@ -226,10 +225,11 @@ const Orrery = () => {
     video.play();
     await loadHandposeModel();
   };
+
   let navigate = useNavigate();
   return (
     <div style={{ display: 'flex' }}>
-      <SpaceChatBot/>
+
       {showPanel && (
         <div style={{ width: '30%', padding: '20px', color: 'white', background: '#1a1a1a' }}>
           {selectedObject ? (
@@ -247,65 +247,77 @@ const Orrery = () => {
 
       <div style={{ width: showPanel ? '70%' : '100%' }}>
         <Canvas
-          camera={{ position: [0, 100, zoomLevel], fov: 75 }}
+          camera={{ position: [0, 50, 150], fov: 50 }}
           style={{ background: 'black', height: '100vh' }}
         >
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} />
-          <OrbitControls />
+          <ZoomController zoomLevel={zoomLevel} />
+          <ambientLight intensity={0.3} />
           <Stars />
           <Sun />
           {planets.map((planet) => (
-            <group key={planet.name}>
-              <OrbitPath distance={planet.distance} />
-              <Dot
+            <>
+              <PlanetModel
+                key={planet.name}
                 name={planet.name}
-                color={planet.color}
                 distance={planet.distance}
                 size={planet.size}
                 speed={planet.speed}
+                gltfUrl={planet.gltfUrl}
                 onClick={() => handleObjectClick(planet)}
               />
-            </group>
+              <OrbitPath distance={planet.distance} onClick={() => handleObjectClick(planet)} />
+            </>
           ))}
+
+
           {neoData.map((neo) => (
-            <group key={neo.name}>
-              {/* <OrbitPath distance={neo.distance} /> */}
-              <Dot
-                name={neo.name}
-                color={neo.color}
-                distance={neo.distance}
-                size={neo.size}
-                speed={neo.speed}
-                onClick={() => handleObjectClick(neo, true)}  // Set isNeo as true
-              />
-            </group>
+            <Dot
+              key={neo.name}
+              name={neo.name}
+              color={neo.color}
+              distance={neo.distance}
+              size={neo.size}
+              speed={neo.speed}
+              onClick={() => handleObjectClick(neo, true)}
+            />
           ))}
 
-          <ZoomController zoomLevel={zoomLevel} />
+          <OrbitControls />
         </Canvas>
-
-        <video ref={videoRef} style={{ display: 'none' }} />
-
-        {!handPoseDetectionStarted && (
-          <button
-            style={{
-              position: 'fixed',
-              bottom: '20px',
-              right: '20px',
-              padding: '10px 20px',
-              backgroundColor: '#007BFF',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-            }}
-            onClick={startHandposeDetection}
-          >
-            Start Handpose Detection
-          </button>
-        )}
       </div>
+
+      {handPoseDetectionStarted && (
+        <video
+          ref={videoRef}
+          style={{
+            position: 'fixed',
+            right: '20px',
+            bottom: '20px',
+            width: '150px',
+            opacity: '0',
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
+      <button
+        className="handpose-btn"
+        onClick={startHandposeDetection}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          width: '60px',
+          height: '60px',
+          borderRadius: '50%',
+          backgroundColor: 'blue',
+          color: 'white',
+          fontSize: '20px',
+          cursor: 'pointer',
+        }}
+      >
+        Start
+      </button>
     </div>
   );
 };
