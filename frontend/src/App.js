@@ -1,5 +1,4 @@
-// src/App.js
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Orrery from './Orrery';
 import OnClickGetTheItem from './component/OnClickGetTheItem';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -10,28 +9,38 @@ function App() {
   const audioRef = useRef(null);
 
   useEffect(() => {
-    // Play the audio when the component mounts
+    // Autoplay muted first, then unmute after interaction
+    const handleInteraction = () => {
+      if (audioRef.current) {
+        audioRef.current.muted = false; // Unmute the audio after user interaction
+      }
+    };
+
     if (audioRef.current) {
-      // Try to autoplay and catch any errors caused by browser autoplay restrictions
+      // Start playing the audio muted
+      audioRef.current.muted = true;
       const playPromise = audioRef.current.play();
+      
       if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            // Autoplay started
-            console.log("Music playing");
-          })
-          .catch(error => {
-            // Autoplay failed
-            console.log("Autoplay failed, user interaction required");
-          });
+        playPromise.catch(() => {
+          console.log("Autoplay muted to comply with browser restrictions.");
+        });
       }
     }
+
+    // Unmute audio on any user interaction (like a click)
+    window.addEventListener('click', handleInteraction);
+
+    // Cleanup the event listener
+    return () => {
+      window.removeEventListener('click', handleInteraction);
+    };
   }, []);
 
   return (
     <>
       {/* Background music element */}
-      <audio ref={audioRef} src={backgroundMusic} loop autoPlay>
+      <audio ref={audioRef} src={backgroundMusic} loop>
         Your browser does not support the audio element.
       </audio>
 
