@@ -14,7 +14,13 @@
   font-family: 'Orbitron', sans-serif; /* Space-themed futuristic font */
   backdrop-filter: blur(10px); /* Glass-like effect */
   border: 2px solid #00FFEA; /* Neon green border */
+  @media (max-width:480px) {
+    width: 80%;
+  }
 }
+
+
+
 
 .information-card h2 {
   font-size: 1.8em;

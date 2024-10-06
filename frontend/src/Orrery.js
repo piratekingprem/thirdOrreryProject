@@ -8,6 +8,7 @@ import './Orrey.css';
 import { useNavigate } from 'react-router-dom';
 
 
+
 const Stars = () => {
   const group = useRef();
   const [positions] = useState(() => {
@@ -248,7 +249,7 @@ const Orrery = () => {
         </div>
       )}
 
-      <div style={{ width: showPanel ? '70%' : '100%' }}>
+      <div style={{ width: showPanel ? '70%' : '100%' }}>n
         <Canvas
           camera={{ position: [0, 50, 150], fov: 50 }}
           style={{ background: 'black', height: '100vh' }}
@@ -285,6 +286,8 @@ const Orrery = () => {
             />
           ))}
 
+          
+
           <OrbitControls />
         </Canvas>
       </div>
@@ -306,18 +309,7 @@ const Orrery = () => {
       <button
         className="handpose-btn"
         onClick={startHandposeDetection}
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          backgroundColor: 'blue',
-          color: 'white',
-          fontSize: '20px',
-          cursor: 'pointer',
-        }}
+        
       >
         Start
       </button>
