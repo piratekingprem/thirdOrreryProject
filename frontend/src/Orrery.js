@@ -95,6 +95,8 @@ const PlanetModel = ({ gltfUrl, distance, speed, size, onClick, name }) => {
   return (
     <group ref={ref} onClick={onClick}>
       <primitive object={scene} scale={size} />
+      {/* Add ambient light for a glowing effect */}
+      <ambientLight intensity={0.5} color="white" />
       <Html position={[0, size * 5, 0]}>
         <div style={{ color: 'white', fontSize: '1em', cursor: 'pointer' }} onClick={onClick}>
           {name}
@@ -103,6 +105,7 @@ const PlanetModel = ({ gltfUrl, distance, speed, size, onClick, name }) => {
     </group>
   );
 };
+
 
 
 
@@ -134,8 +137,8 @@ const Orrery = () => {
   let model = null;
 
   const planets = [
-    { name: 'Mercury', distance: 0.3 * 20, size: 0.001, speed: 0.03, gltfUrl: '/mercury.glb' },
-    { name: 'Venus', distance: 0.7 * 20, size: 0.02, speed: 0.02, gltfUrl: '/venus.glb' },
+    { name: 'Mercury', distance: 0.3 * 20, size: 0.005, speed: 0.03, gltfUrl: '/mercury.glb' },
+    { name: 'Venus', distance: 0.7 * 20, size: 0.1, speed: 0.02, gltfUrl: '/venus.glb' },
     { name: 'Earth', distance: 1 * 20, size: 0.4, speed: 0.01, gltfUrl: './Earth.glb' },
     { name: 'Mars', distance: 1.52 * 20, size: 0.15, speed: 0.008, gltfUrl: '/Mars.glb' },
     { name: 'Jupiter', distance: 5.2 * 20, size: 0.05, speed: 0.005, gltfUrl: '/jupiter.glb' },
