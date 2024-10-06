@@ -306,13 +306,7 @@ const Orrery = () => {
         />
       )}
 
-      <button
-        className="handpose-btn"
-        onClick={startHandposeDetection}
-        
-      >
-        Start
-      </button>
+      
     </div>
   );
 };
