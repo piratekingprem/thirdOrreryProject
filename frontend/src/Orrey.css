@@ -12,3 +12,20 @@ canvas {
   width: 100vw;
   height: 100vh;
 }
+
+.planet-label {
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: all;
+  transition: transform 0.3s, color 0.3s;
+}
+
+
+
+.planet-label:hover {
+  transform: scale(1.2);
+  color: rgb(159, 220, 26);
+  
+}
