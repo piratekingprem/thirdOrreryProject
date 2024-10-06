@@ -131,8 +131,8 @@ const Orrery = () => {
   const [showPanel, setShowPanel] = useState(false);
   const [neoData, setNeoData] = useState([]);
   const [zoomLevel, setZoomLevel] = useState(100); // Initialize zoom level
-  const [handPoseDetectionStarted, setHandPoseDetectionStarted] = useState(false); // State to track if handpose detection has started
-
+  const [targetZoomLevel, setTargetZoomLevel] = useState(100);
+  const [handPoseDetectionStarted, setHandPoseDetectionStarted] = useState(false);
   const videoRef = useRef(null);
   let model = null;
 
@@ -193,6 +193,8 @@ const Orrery = () => {
 
   const detectHand = async () => {
     const video = videoRef.current;
+    if (!video || !model) return;
+
     const predictions = await model.estimateHands(video);
 
     if (predictions.length > 0) {
@@ -209,21 +211,26 @@ const Orrery = () => {
       controlZoom(distance);
     }
 
-    requestAnimationFrame(detectHand);
+    setTimeout(() => {
+      requestAnimationFrame(detectHand); // Throttle detection for better performance
+    }, 100); // Adjust this delay to control the gesture detection interval
   };
-
   const controlZoom = (distance) => {
+    const zoomSpeed = 5; // Faster zoom
+    const minZoom = 20;
+    const maxZoom = 100;
+
     if (distance < 50) {
-      setZoomLevel((prev) => Math.max(prev - 1, 100)); // Zoom in
+      setTargetZoomLevel((prev) => Math.max(prev - zoomSpeed, minZoom));
     } else if (distance > 100) {
-      setZoomLevel((prev) => Math.min(prev + 1, 100)); // Zoom out
+      setTargetZoomLevel((prev) => Math.min(prev + zoomSpeed, maxZoom));
     }
   };
 
   const startHandposeDetection = async () => {
-    setHandPoseDetectionStarted(true); // Mark handpose detection as started
+    setHandPoseDetectionStarted(true);
     const video = videoRef.current;
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
     video.srcObject = stream;
     video.play();
     await loadHandposeModel();
@@ -289,38 +296,28 @@ const Orrery = () => {
         </Canvas>
       </div>
 
-      {handPoseDetectionStarted && (
-        <video
-          ref={videoRef}
+      <video ref={videoRef} style={{ position: 'absolute', width: '150px', bottom: '20px', left: '20px' }} />
+      {!handPoseDetectionStarted && (
+        <button
           style={{
             position: 'fixed',
-            right: '20px',
             bottom: '20px',
-            width: '150px',
-            opacity: '0',
-            pointerEvents: 'none',
+            right: '20px',
+            padding: '10px 20px',
+            backgroundColor: '#007BFF',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '16px',
           }}
-        />
+          onClick={startHandposeDetection}
+        >
+          Start Handpose Detection
+        </button>
       )}
 
-      <button
-        className="handpose-btn"
-        onClick={startHandposeDetection}
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          backgroundColor: 'blue',
-          color: 'white',
-          fontSize: '20px',
-          cursor: 'pointer',
-        }}
-      >
-        Start
-      </button>
+     
     </div>
   );
 };

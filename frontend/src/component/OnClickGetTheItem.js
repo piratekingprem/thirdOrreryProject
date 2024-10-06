@@ -78,7 +78,7 @@ export default function OnClickGetTheItem() {
 
     const fetchGeneratedContent = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/v1/get_info/${planet}`);
+        const response = await fetch(`https://third-orrery-project-backend.vercel.app/api/v1/get_info/${planet}`);
         const data = await response.text();
         setGeneratedText(data || "AI content could not be generated.");
       } catch (error) {
@@ -86,7 +86,6 @@ export default function OnClickGetTheItem() {
         setGeneratedText("Error fetching AI content.");
       }
     };
-
     fetchGeneratedContent();
   }, [planet]);
 
