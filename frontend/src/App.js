@@ -9,28 +9,36 @@ function App() {
   const audioRef = useRef(null);
 
   useEffect(() => {
+    const audio = audioRef.current;
+
     // Autoplay muted first, then unmute after interaction
     const handleInteraction = () => {
-      if (audioRef.current) {
-        audioRef.current.muted = false; // Unmute the audio after user interaction
+      if (audio && audio.paused) {
+        audio.muted = false; // Unmute the audio after user interaction
+        audio.play().catch(error => {
+          console.error('Error attempting to play audio:', error);
+        });
       }
     };
 
-    if (audioRef.current) {
-      // Start playing the audio muted
-      audioRef.current.muted = true;
-      const playPromise = audioRef.current.play();
-      
+    // Attempt to autoplay muted
+    if (audio) {
+      audio.muted = true; // Start muted
+      const playPromise = audio.play();
+
+      // Autoplay might be blocked, handle it
       if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          console.log("Autoplay muted to comply with browser restrictions.");
+        playPromise.then(() => {
+          console.log('Autoplay started (muted).');
+        }).catch(error => {
+          console.log('Autoplay blocked or failed:', error);
         });
       }
     }
 
-    // Unmute audio on any user interaction (like a click)
+    // Add event listener to unmute and play on interaction
     window.addEventListener('click', handleInteraction);
-
+    
     // Cleanup the event listener
     return () => {
       window.removeEventListener('click', handleInteraction);
