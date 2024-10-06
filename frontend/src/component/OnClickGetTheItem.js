@@ -144,8 +144,8 @@ export default function OnClickGetTheItem() {
   };
 
   return (
-    <div style={{ position: 'relative' }}>
-      <Canvas>
+    <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+      <Canvas style={{ width: '100%', height: '100%' }}>
         <Stars/>
         <Environment preset="sunset" />
         <ambientLight intensity={0.1} />
@@ -161,7 +161,7 @@ export default function OnClickGetTheItem() {
 
       <InformationCard info={generatedText} />
 
-      <video ref={videoRef} style={{ position : 'absolute', width: '150px' }} />
+      <video ref={videoRef} style={{ position: 'absolute', width: '150px', bottom: '20px', left: '20px' }} />
       {!handPoseDetectionStarted && (
         <button
           style={{
@@ -174,6 +174,7 @@ export default function OnClickGetTheItem() {
             border: 'none',
             borderRadius: '5px',
             cursor: 'pointer',
+            fontSize: '16px',
           }}
           onClick={startHandposeDetection}
         >
@@ -181,7 +182,7 @@ export default function OnClickGetTheItem() {
         </button>
       )}
 
-      <div>
+      <div style={{ padding: '20px', fontSize: '1rem' }}>
         <h2>AI-Generated Story:</h2>
         <p>{generatedText}</p>
       </div>
