@@ -31,22 +31,31 @@ export default function InformationCard({ info }) {
   return (
     <div className="information-card">
       <h2>Information Title</h2>
-
+  
       {/* Render the current content using ReactMarkdown */}
       <ReactMarkdown>{currentContent}</ReactMarkdown>
-
+  
       {/* Pagination Controls */}
       <div className="pagination-controls">
-        <button onClick={handlePreviousPage} disabled={currentPage === 0}>
-        &#60;
-        </button>
+        {/* Only show the Previous button if it's not the first page */}
+        {currentPage > 0 && (
+          <button onClick={handlePreviousPage}>
+            &#60;
+          </button>
+        )}
+  
         <span>
           Page {currentPage + 1} of {totalPages}
         </span>
-        <button onClick={handleNextPage} disabled={currentPage === totalPages - 1}>
-          {">"}
-        </button>
+  
+        {/* Only show the Next button if it's not the last page */}
+        {currentPage < totalPages - 1 && (
+          <button onClick={handleNextPage}>
+            {">"}
+          </button>
+        )}
       </div>
     </div>
   );
+  
 }

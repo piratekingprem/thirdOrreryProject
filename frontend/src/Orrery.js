@@ -66,7 +66,7 @@ const Dot = ({ name, color, distance, size, speed, onClick }) => {
       <sphereGeometry args={[size, 32, 32]} />
       <meshStandardMaterial color={color} />
       <Html position={[0, size + 2, 0]}>
-        <div style={{ color: 'white', fontSize: '1em', cursor: 'pointer' }} onClick={onClick}>
+        <div className='planet-label' style={{ fontSize: '1em', cursor: 'pointer' }} onClick={onClick}>
           {name}
         </div>
       </Html>
@@ -98,7 +98,7 @@ const PlanetModel = ({ gltfUrl, distance, speed, size, onClick, name }) => {
       {/* Add ambient light for a glowing effect */}
       <ambientLight intensity={0.5} color="white" />
       <Html position={[0, size * 5, 0]}>
-        <div style={{ color: 'white', fontSize: '1em', cursor: 'pointer' }} onClick={onClick}>
+        <div className='planet-label' style={{  fontSize: '1em', cursor: 'pointer'  }} onClick={onClick}>
           {name}
         </div>
       </Html>
