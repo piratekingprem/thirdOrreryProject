@@ -299,26 +299,7 @@ const Orrery = () => {
         </Canvas>
       </div>
 
-      <video ref={videoRef} style={{ position: 'absolute', width: '150px', bottom: '20px', left: '20px' }} />
-      {!handPoseDetectionStarted && (
-        <button
-          style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px',
-            padding: '10px 20px',
-            backgroundColor: '#007BFF',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontSize: '16px',
-          }}
-          onClick={startHandposeDetection}
-        >
-          Start Handpose Detection
-        </button>
-      )}
+      
     </div>
   );
 };
