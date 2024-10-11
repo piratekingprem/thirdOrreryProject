@@ -30,7 +30,7 @@ app.get('/api/v1/get_info/:planet', async(req,res)=> {
     const {planet} = req.params;
     const genAI = new GoogleGenerativeAI(process.env.API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const prompt = `Give the detail information of ${planet} in points` ;
+    const prompt = `${planet}`;
     const result = await model.generateContent(prompt);
     res.send(result.response.text());
 })
